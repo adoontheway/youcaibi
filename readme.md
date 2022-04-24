@@ -17,3 +17,9 @@ api设计
  ```sh
 curl -uri 'http://localhost:8000/user/123' -Method post
  ```
+
+ ## Mongo
+
+ ### 连接问题
+ Robo 3T可以连接，但是代码连接不了，需要重启mongo并update用户
+ [Unauthorized 故障排查手记](https://www.jianshu.com/p/293263675fdc)

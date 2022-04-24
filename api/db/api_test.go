@@ -63,6 +63,6 @@ func testRegetUser(t *testing.T) {
 	}
 
 	if pwd != "" {
-		t.Fail()
+		t.Errorf("Error on RegetUser: pwd is %s", pwd)
 	}
 }

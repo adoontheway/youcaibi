@@ -22,7 +22,7 @@ func init() {
 	// 	panic(err.Error())
 	// }
 
-	db, _ := connect("mongodb://test:123456@localhost:7017/test", "video_server")
+	db, _ := connect("mongodb://test:123456@localhost:7017", "video_server")
 	user_coll = db.Collection("user_coll")
 	video_coll = db.Collection("video_coll")
 	comment_coll = db.Collection("comment_coll")
