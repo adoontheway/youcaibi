@@ -45,7 +45,7 @@ func testGetUser(t *testing.T) {
 	}
 
 	if pwd != "456" {
-		t.Fail()
+		t.Errorf("Error on GetUser pwd:%v", pwd)
 	}
 }
 
@@ -58,11 +58,10 @@ func testDeleteUser(t *testing.T) {
 
 func testRegetUser(t *testing.T) {
 	pwd, err := GetUserCredential("123")
-	if err != nil {
-		t.Errorf("Error on RegetUser:%v", err)
-	}
+	if err == nil {
 
-	if pwd != "" {
-		t.Errorf("Error on RegetUser: pwd is %s", pwd)
+		if pwd != "" {
+			t.Errorf("Error on RegetUser: pwd is %s", pwd)
+		}
 	}
 }

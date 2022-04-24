@@ -48,7 +48,7 @@ func GetUserCredential(loginName string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return user.UserName, nil
+	return user.Password, nil
 }
 
 func DeleteUserCredential(loginName string, pwd string) error {
