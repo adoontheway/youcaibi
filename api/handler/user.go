@@ -26,12 +26,12 @@ func AllUserVideo(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 func UserVideo(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	uname := p.ByName("username")
-	vid := p.ByName("vid")
+	// vid := p.ByName("vid")
 	io.WriteString(w, uname)
 }
 
 func DeleteUserVideo(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	uname := p.ByName("username")
-	vid := p.ByName("vid")
+	// vid := p.ByName("vid")
 	io.WriteString(w, uname)
 }
