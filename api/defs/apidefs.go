@@ -18,3 +18,9 @@ type CommentInfo struct {
 	Content string `json:"content" bson:"content"`
 	Vid     string `json:"video_id" bson:"video_id"`
 }
+
+type SimpleSession struct {
+	UserName string `json:"username" bson:"username"`
+	TTL      int64  `json:"ttl" bson:"ttl"` // TTL不需要更新
+	Id       string `json:"sid" bson:"sid"`
+}
