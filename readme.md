@@ -39,3 +39,4 @@ curl -uri 'http://localhost:8000/user' -Method post -Body $JSON
  * httproute: http server
  * google/uuid: 生成uuid
  * sony/sonyflake: 生成id
+ * go-mongo-driver: 采用mongo数据库
