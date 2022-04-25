@@ -12,18 +12,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	// "go.mongodb.org/mongo-driver/x/mongo/driver/uuid"
 	"github.com/google/uuid"
 )
 
 func AddUserCredential(loginName string, pwd string) (uint64, error) {
-	// stmtIns, err := dbConn.Prepare("INSERT INTO t_users (login_name, pwd) VALUES(?,?)")
-	// if err != nil {
-	// 	return err
-	// }
-	// stmtIns.Exec(loginName, pwd)
-	// stmtIns.Close()
-	// return nil
+
 	user := &defs.UserCredential{}
 	err := user_coll.FindOne(context.TODO(), bson.D{{"username", loginName}}).Decode(user)
 	if err != nil {
@@ -41,15 +34,7 @@ func AddUserCredential(loginName string, pwd string) (uint64, error) {
 }
 
 func GetUserCredential(loginName string) (string, error) {
-	// stmtOut, err := dbConn.Prepare("SELECT pwd FROM t_user WHERE login_name=?")
-	// if err != nil {
-	// 	log.Printf("%s", err)
-	// 	return "", err
-	// }
-	// var pwd string
-	// stmtOut.QueryRow(loginName).Scan(&pwd)
-	// stmtOut.Close()
-	// return pwd, nil
+
 	user := &defs.UserCredential{}
 	err := user_coll.FindOne(context.TODO(), bson.D{{"username", loginName}}).Decode(user)
 	if err != nil {
@@ -59,13 +44,7 @@ func GetUserCredential(loginName string) (string, error) {
 }
 
 func DeleteUserCredential(loginName string, pwd string) error {
-	// stmtDel, err := dbConn.Prepare("DELETE FROM t_users WHERE login_name = ? and pwd = ? ")
-	// if err != nil {
-	// 	fmt.Printf("%s", err)
-	// 	return err
-	// }
-	// stmtDel.Exec(loginName, pwd)
-	// stmtDel.Close()
+
 	deleteRes, err := user_coll.DeleteOne(context.TODO(), bson.D{{"username", loginName}, {"password", pwd}})
 	if err != nil {
 		return err
@@ -86,7 +65,11 @@ func AddNewVideo(aid uint64, name string) (*defs.VideoInfo, error) {
 		Name:         name,
 		DisplayCtime: ctime,
 	}
-	video_coll.InsertOne(context.TODO(), video_info)
+	insertOne, err := video_coll.InsertOne(context.TODO(), video_info)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Insert User Successed:", insertOne.InsertedID)
 	return video_info, nil
 }
 
@@ -132,4 +115,68 @@ func GetVideo(vid string) (*defs.VideoInfo, error) {
 		return nil, err
 	}
 	return video, nil
+}
+
+// AddNewComment add new comment
+func AddNewComment(vid string, uid uint64, content string) error {
+	comment := defs.CommentInfo{
+		Vid:     vid,
+		Uid:     uid,
+		Id:      util.GenSonyFlake(),
+		Content: content,
+	}
+	insertOne, err := comment_coll.InsertOne(context.TODO(), comment)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Insert Comment Successed:", insertOne.InsertedID)
+	return nil
+}
+
+// GetVideoComment get comment list by video
+func GetVideoComments(vid string) ([]*defs.CommentInfo, error) {
+	findOptions := options.Find()
+	findOptions.SetLimit(10)
+	cursor, err := comment_coll.Find(context.TODO(), bson.D{{"video_id", vid}}, findOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	results := make([]*defs.CommentInfo, 0, 0)
+	for cursor.Next(context.TODO()) {
+		var result defs.CommentInfo
+		err := cursor.Decode(&result)
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, &result)
+	}
+	if err := cursor.Err(); err != nil {
+		log.Fatal(err)
+	}
+	cursor.Close(context.TODO())
+	return results, nil
+}
+
+// GetUserComments get comments by user
+func GetUserComments(uid uint64) ([]*defs.CommentInfo, error) {
+	findOptions := options.Find()
+	findOptions.SetLimit(10)
+	cursor, err := comment_coll.Find(context.TODO(), bson.D{{"uid", uid}}, findOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	results := make([]*defs.CommentInfo, 0, 0)
+	for cursor.Next(context.TODO()) {
+		var result defs.CommentInfo
+		err := cursor.Decode(&result)
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, &result)
+	}
+	if err := cursor.Err(); err != nil {
+		log.Fatal(err)
+	}
+	cursor.Close(context.TODO())
+	return results, nil
 }

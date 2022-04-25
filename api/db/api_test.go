@@ -2,10 +2,12 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"youcaibi/api/defs"
 )
 
+// test fixture
 var (
 	user = defs.UserCredential{
 		UserName: "123",
@@ -126,5 +128,44 @@ func testRegetVideo(t *testing.T) {
 	}
 	if list != nil && len(list) != 0 {
 		t.Error("Reget video failed, supposed to be empty")
+	}
+}
+
+func TestCommentFlow(t *testing.T) {
+	clearTables()
+	t.Run("AddUser", testAddUser)
+	t.Run("AddVideo", testAddVideo)
+	t.Run("AddComment", testAddComment)
+	t.Run("GetVideoComment", testGetVideoComment)
+	t.Run("GetUserComment", testGetUserComment)
+}
+
+func testAddComment(t *testing.T) {
+	err := AddNewComment(video.Id, user.Id, "This is a comment")
+	if err != nil {
+		t.Errorf("Add Comment error:%s", err)
+	}
+}
+
+func testGetVideoComment(t *testing.T) {
+	list, err := GetVideoComments(video.Id)
+	if err != nil {
+		t.Errorf("Get Comments error:%s", err)
+	}
+	if len(list) == 0 {
+		t.Error("Get comment by video failed, supposed not to be empty")
+	}
+}
+
+func testGetUserComment(t *testing.T) {
+	list, err := GetUserComments(user.Id)
+	if err != nil {
+		t.Errorf("Get Comments error:%s", err)
+	}
+	if len(list) == 0 {
+		t.Error("Get comment by video failed, supposed not to be empty")
+	}
+	for _, ele := range list {
+		fmt.Printf("%+v\n", ele)
 	}
 }
