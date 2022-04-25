@@ -1,5 +1,6 @@
 package defs
 
+// Models
 type UserCredential struct {
 	UserName string `json:"user_name" bson:"username"`
 	Password string `json:"pwd" bson:"password"`
@@ -23,4 +24,10 @@ type SimpleSession struct {
 	UserName string `json:"username" bson:"username"`
 	TTL      int64  `json:"ttl" bson:"ttl"` // TTL不需要更新
 	Id       string `json:"sid" bson:"sid"`
+}
+
+// Response
+type SignedUp struct {
+	Success   bool   `json:"success"`
+	SessionId string `json:"session_id"`
 }

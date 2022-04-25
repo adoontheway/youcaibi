@@ -16,6 +16,13 @@ api设计
  ### curl
  ```sh
 curl -uri 'http://localhost:8000/user/123' -Method post
+
+$body = @{
+    user_name = "ado";
+    pwd = "12345";
+}
+$JSON = $body | convertto-json
+curl -uri 'http://localhost:8000/user' -Method post -Body $JSON
  ```
 
  ## Mongo
@@ -27,3 +34,8 @@ curl -uri 'http://localhost:8000/user/123' -Method post
  ## Session 与 Cookie
  Session是服务端保持的状态，服务器重启的时候需要去加载所有的session到cache中
  Cookie是前端保存的状态，Cookie里面可以存session key，前端登录过之后重登可以用sessionkey来登录
+
+ ## 用到的库
+ * httproute: http server
+ * google/uuid: 生成uuid
+ * sony/sonyflake: 生成id

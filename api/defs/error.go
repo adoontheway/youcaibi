@@ -11,7 +11,7 @@ type ErrorResponse struct {
 }
 
 var (
-	ErrorRequestBodyParseFaild = ErrorResponse{
+	ErrorRequestBodyParseFailed = ErrorResponse{
 		StatusCode: 400,
 		Error: Err{
 			Error:     "Parse Body failed",
@@ -26,4 +26,7 @@ var (
 			ErrorCode: "002",
 		},
 	}
+
+	ErrorDBError            = ErrorResponse{StatusCode: 500, Error: Err{Error: "DB ops failed", ErrorCode: "003"}}
+	ErrorInternalErrorFault = ErrorResponse{StatusCode: 500, Error: Err{Error: "Internal service error", ErrorCode: "004"}}
 )
