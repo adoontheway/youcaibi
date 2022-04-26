@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -56,4 +57,9 @@ func uploadHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) 
 	}
 
 	sendNormalResponse(w, "Updateloaded succesfully", http.StatusCreated)
+}
+
+func testpageHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	t, _ := template.ParseFiles("./videos/upload.html")
+	t.Execute(w, nil)
 }

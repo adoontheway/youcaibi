@@ -27,4 +27,5 @@ func init() {
 	video_coll = db.Collection("video_coll")
 	comment_coll = db.Collection("comment_coll")
 	session_coll = db.Collection("session_coll")
+
 }
