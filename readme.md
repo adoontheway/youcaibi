@@ -40,3 +40,7 @@ curl -uri 'http://localhost:8000/user' -Method post -Body $JSON
  * google/uuid: 生成uuid
  * sony/sonyflake: 生成id
  * go-mongo-driver: 采用mongo数据库
+
+ ## TODO
+ * 通用的，业务相关性不大的组件可以拆出成库
+ * TODO
