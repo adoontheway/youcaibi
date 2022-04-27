@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -62,6 +64,7 @@ func userHomeHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	t.Execute(w, p)
 }
 
+// 透传
 func apiHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	if r.Method != http.MethodPost {
 		re, _ := json.Marshal(ErrorRequestNotRecognized)
@@ -78,4 +81,12 @@ func apiHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	}
 	request(apibody, w, r)
 	defer r.Body.Close()
+}
+
+// 代理
+func proxyHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	u, _ := url.Parse("http://127.0.0.1:9000/")
+
+	proxy := httputil.NewSingleHostReverseProxy(u)
+	proxy.ServeHTTP(w, r)
 }

@@ -33,3 +33,7 @@ func ValidateUser(w http.ResponseWriter, r *http.Request) bool {
 	}
 	return true
 }
+
+// IAM 模块，用来区分用户角色和权限
+// - SSO
+// - RBAC role based access control

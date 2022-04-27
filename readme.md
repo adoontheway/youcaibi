@@ -43,4 +43,5 @@ curl -uri 'http://localhost:8000/user' -Method post -Body $JSON
 
  ## TODO
  * 通用的，业务相关性不大的组件可以拆出成库
- * TODO
+ * jwt用来生成session
+ * 视频和评论分页

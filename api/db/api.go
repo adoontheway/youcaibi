@@ -43,6 +43,16 @@ func GetUserCredential(loginName string) (string, error) {
 	return user.Password, nil
 }
 
+func GetUser(loginName string) (*defs.UserInfo, error) {
+
+	user := &defs.UserInfo{}
+	err := user_coll.FindOne(context.TODO(), bson.D{{"username", loginName}}).Decode(user)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 func DeleteUserCredential(loginName string, pwd string) error {
 
 	deleteRes, err := user_coll.DeleteOne(context.TODO(), bson.D{{"username", loginName}, {"password", pwd}})

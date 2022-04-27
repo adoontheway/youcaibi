@@ -7,6 +7,16 @@ type UserCredential struct {
 	Id       uint64 `json:"uid" bson:"uid"`
 }
 
+type UserInfo struct {
+	UserName string `json:"user_name" bson:"username"`
+	Id       uint64 `json:"uid" bson:"uid"`
+}
+
+type NewVideo struct {
+	AuthorId uint64 `json:"author_id" bson:"author_id"`
+	Name     string `json:"name" bson:"name"`
+}
+
 type VideoInfo struct {
 	Id           string `json:"vid" bson:"vid"`
 	Author       uint64 `json:"author_id" bson:"author_id"`
