@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
+	"youcaibi/conf"
 )
 
 var httpClient *http.Client
@@ -19,10 +21,14 @@ func init() {
 func request(b *ApiBody, w http.ResponseWriter, r *http.Request) {
 	var resp *http.Response
 	var err error
+
+	u, _ := url.Parse(b.Url)
+	u.Host = conf.GetLbAddr() + ":" + u.Port()
+	newUrl := u.String()
 	//golang doesn't need break, and keyword:fallthrough is new
 	switch b.Method {
 	case http.MethodGet:
-		req, _ := http.NewRequest("GET", b.Url, nil)
+		req, _ := http.NewRequest("GET", newUrl, nil)
 		req.Header = r.Header
 		resp, err = httpClient.Do(req)
 		if err != nil {
@@ -31,7 +37,7 @@ func request(b *ApiBody, w http.ResponseWriter, r *http.Request) {
 		}
 		normalResponse(w, resp)
 	case http.MethodPost:
-		req, _ := http.NewRequest("POST", b.Url, bytes.NewBuffer([]byte(b.RequestBody)))
+		req, _ := http.NewRequest("POST", newUrl, bytes.NewBuffer([]byte(b.RequestBody)))
 		req.Header = r.Header
 		resp, err = httpClient.Do(req)
 		if err != nil {
@@ -40,7 +46,7 @@ func request(b *ApiBody, w http.ResponseWriter, r *http.Request) {
 		}
 		normalResponse(w, resp)
 	case http.MethodDelete:
-		req, _ := http.NewRequest("DELETE", b.Url, nil)
+		req, _ := http.NewRequest("DELETE", newUrl, nil)
 		req.Header = r.Header
 		resp, err = httpClient.Do(req)
 		if err != nil {

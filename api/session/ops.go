@@ -16,8 +16,8 @@ func init() {
 	sessionMap = &sync.Map{}
 }
 
-func nowInMilli() int64 {
-	return time.Now().UnixNano() / 1000000
+func nowInSeconds() int64 {
+	return time.Now().UnixNano() / 100000
 }
 
 func LoadSessionsFromDb() {
@@ -34,7 +34,7 @@ func LoadSessionsFromDb() {
 
 func NewSessionId(username string) string {
 	id := uuid.New()
-	ct := nowInMilli()
+	ct := nowInSeconds()
 	ttl := ct + 30*60*100 // session valid time: 30min
 	session := &defs.SimpleSession{
 		UserName: username,
@@ -48,15 +48,26 @@ func NewSessionId(username string) string {
 
 func IsSessionExpired(sid string) (string, bool) {
 	ss, ok := sessionMap.Load(sid)
+	ct := nowInSeconds()
 	if ok {
-		ct := nowInMilli()
+
 		if ss.(*defs.SimpleSession).TTL < ct {
 			deleteExpiredSession(sid)
 			return "", true
 		}
 		return ss.(*defs.SimpleSession).UserName, false
+	} else {
+		ss, err := db.RetrieveSession(sid)
+		if err != nil || ss == nil {
+			return "", true
+		}
+		if ss.TTL < ct {
+			deleteExpiredSession(sid)
+			return "", true
+		}
+		sessionMap.Store(sid, ss)
+		return ss.UserName, false
 	}
-	return "", true
 }
 
 func deleteExpiredSession(sid string) {
