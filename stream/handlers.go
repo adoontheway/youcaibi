@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -14,17 +13,21 @@ import (
 // 一个handler就是一个goroutine?
 func streamHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	vid := p.ByName("vid")
-	vl := VIDEO_DIR + vid + ".mp4"
+	// vl := VIDEO_DIR + vid + ".mp4"
 
-	video, err := os.Open(vl)
-	if err != nil {
-		log.Printf("Error when open file :%s", err)
-		sendErrorResponse(w, http.StatusInternalServerError, "Internal Error") //500
-		return
-	}
-	w.Header().Set("Content-Type", "video/mp4")
-	http.ServeContent(w, r, "", time.Now(), video)
-	defer video.Close()
+	// video, err := os.Open(vl)
+	// if err != nil {
+	// 	log.Printf("Error when open file :%s", err)
+	// 	sendErrorResponse(w, http.StatusInternalServerError, "Internal Error") //500
+	// 	return
+	// }
+	// w.Header().Set("Content-Type", "video/mp4")
+	// http.ServeContent(w, r, "", time.Now(), video)
+	// defer video.Close()
+
+	// oss
+	targetUrl := "https://ossurl/videos" + vid
+	http.Redirect(w, r, targetUrl, 301)
 }
 
 func uploadHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -56,7 +59,20 @@ func uploadHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) 
 		return
 	}
 
-	sendNormalResponse(w, "Updateloaded succesfully", http.StatusCreated)
+	ossfn := "videos/" + fileName
+	path := "./videos/" + fileName
+	buckname := "heh-videos"
+	ret := UploadToOss(ossfn, path, buckname)
+
+	if !ret {
+		log.Println("Upload file failed")
+		sendErrorResponse(w, http.StatusInternalServerError, "Internal Error")
+		return
+	}
+
+	os.Remove(path)
+
+	sendNormalResponse(w, "Uploaded succesfully", http.StatusCreated)
 }
 
 func testpageHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
