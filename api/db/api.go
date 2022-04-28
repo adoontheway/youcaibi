@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 	"youcaibi/api/defs"
-	"youcaibi/api/util"
+	"youcaibi/common/util"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -83,8 +83,8 @@ func AddNewVideo(aid uint64, name string) (*defs.VideoInfo, error) {
 	return video_info, nil
 }
 
-func DeleteVideo(aid uint64, vid string) error {
-	deleteRes, err := video_coll.DeleteOne(context.TODO(), bson.D{{"author_id", aid}, {"vid", vid}})
+func DeleteVideo(vid string) error {
+	deleteRes, err := video_coll.DeleteOne(context.TODO(), bson.D{{"vid", vid}})
 	if err != nil {
 		return err
 	}

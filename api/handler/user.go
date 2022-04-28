@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"youcaibi/api/db"
 	"youcaibi/api/defs"
 	"youcaibi/api/session"
+	"youcaibi/common/util"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -17,11 +19,11 @@ func CreateUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	res, _ := ioutil.ReadAll(r.Body)
 	ubody := &defs.UserCredential{}
 	if err := json.Unmarshal(res, ubody); err != nil {
-		sendErrorResponse(w, defs.ErrorRequestBodyParseFailed)
+		util.SendErrorResponse(w, defs.ErrorRequestBodyParseFailed)
 	}
 
 	if _, err := db.AddUserCredential(ubody.UserName, ubody.Password); err != nil {
-		sendErrorResponse(w, defs.ErrorDBError)
+		util.SendErrorResponse(w, defs.ErrorDBError)
 	}
 
 	sid := session.NewSessionId(ubody.UserName)
@@ -31,9 +33,9 @@ func CreateUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	}
 
 	if resp, err := json.Marshal(su); err != nil {
-		sendErrorResponse(w, defs.ErrorInternalErrorFault)
+		util.SendErrorResponse(w, defs.ErrorInternalErrorFault)
 	} else {
-		sendNormalResponse(w, string(resp), 200)
+		util.SendNormalResponse(w, string(resp), 200)
 	}
 }
 
@@ -42,17 +44,17 @@ func LoginUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	res, _ := ioutil.ReadAll(r.Body)
 	ubody := &defs.UserCredential{}
 	if err := json.Unmarshal(res, ubody); err != nil {
-		sendErrorResponse(w, defs.ErrorRequestBodyParseFailed)
+		util.SendErrorResponse(w, defs.ErrorRequestBodyParseFailed)
 	}
 
 	uname := p.ByName("username")
 	if uname != ubody.UserName {
-		sendErrorResponse(w, defs.ErrorNotAuthed)
+		util.SendErrorResponse(w, defs.ErrorNotAuthed)
 		return
 	}
 	pwd, err := db.GetUserCredential(ubody.UserName)
 	if err != nil || len(pwd) == 0 || pwd != ubody.Password {
-		sendErrorResponse(w, defs.ErrorNotAuthed)
+		util.SendErrorResponse(w, defs.ErrorNotAuthed)
 		return
 	}
 
@@ -63,9 +65,9 @@ func LoginUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	}
 
 	if resp, err := json.Marshal(su); err != nil {
-		sendErrorResponse(w, defs.ErrorInternalErrorFault)
+		util.SendErrorResponse(w, defs.ErrorInternalErrorFault)
 	} else {
-		sendNormalResponse(w, string(resp), 200)
+		util.SendNormalResponse(w, string(resp), 200)
 	}
 }
 
@@ -76,20 +78,20 @@ func GetUserInfo(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	res, _ := ioutil.ReadAll(r.Body)
 	ubody := &defs.NewVideo{}
 	if err := json.Unmarshal(res, ubody); err != nil {
-		sendErrorResponse(w, defs.ErrorRequestBodyParseFailed)
+		util.SendErrorResponse(w, defs.ErrorRequestBodyParseFailed)
 		return
 	}
 	vi, err := db.AddNewVideo(ubody.AuthorId, ubody.Name)
 
 	if err != nil {
-		sendErrorResponse(w, defs.ErrorDBError)
+		util.SendErrorResponse(w, defs.ErrorDBError)
 		return
 	}
 
 	if resp, err := json.Marshal(vi); err != nil {
-		sendErrorResponse(w, defs.ErrorInternalErrorFault)
+		util.SendErrorResponse(w, defs.ErrorInternalErrorFault)
 	} else {
-		sendNormalResponse(w, string(resp), 200)
+		util.SendNormalResponse(w, string(resp), 200)
 	}
 }
 
@@ -114,7 +116,17 @@ func UserVideo(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 }
 
 func DeleteUserVideo(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	uname := p.ByName("username")
-	// vid := p.ByName("vid")
-	io.WriteString(w, uname)
+	if !ValidateUser(w, r) {
+		return
+	}
+	// check user is owner
+	vid := p.ByName("vid")
+	err := db.DeleteVideo(vid)
+	if err != nil {
+		log.Printf("Error in deletevideo:%s", err)
+		util.SendErrorResponse(w, defs.ErrorDBError)
+		return
+	}
+	go util.SendDeleteVideoRequest(vid)
+	util.SendNormalResponse(w, "", 204)
 }

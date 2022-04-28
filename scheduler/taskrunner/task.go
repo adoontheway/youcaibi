@@ -3,9 +3,10 @@ package taskrunner
 import (
 	"errors"
 	"log"
-	"os"
 	"sync"
 	"youcaibi/scheduler/db"
+
+	"youcaibi/scheduler/oss"
 )
 
 func VideoClearDispatcher(dc dataChan) error {
@@ -26,10 +27,12 @@ func VideoClearDispatcher(dc dataChan) error {
 }
 
 func deleteVideo(vid string) error {
-	err := os.Remove("./videos/" + vid)
-	if err != nil && !os.IsNotExist(err) {
-		log.Printf("Delete video error: %v", err)
-		return err
+	ossfilename := "videos/" + vid
+	bucketname := "hehe"
+	ok := oss.DeleteObject(ossfilename, bucketname)
+	if !ok {
+		log.Println("Delect video from oss error")
+		return errors.New("delete video error")
 	}
 	return nil
 }

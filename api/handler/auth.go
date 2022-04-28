@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"youcaibi/api/defs"
 	"youcaibi/api/session"
+	"youcaibi/common/util"
 )
 
 const (
@@ -28,7 +29,7 @@ func ValidateUserSession(r *http.Request) bool {
 func ValidateUser(w http.ResponseWriter, r *http.Request) bool {
 	uname := r.Header.Get(HEADER_FIELD_UNAME)
 	if len(uname) == 0 {
-		sendErrorResponse(w, defs.ErrorNotAuthed)
+		util.SendErrorResponse(w, defs.ErrorNotAuthed)
 		return false
 	}
 	return true

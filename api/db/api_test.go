@@ -115,7 +115,7 @@ func testGetUserVideo(t *testing.T) {
 }
 
 func testDeleteVideo(t *testing.T) {
-	err := DeleteVideo(user.Id, video.Id)
+	err := DeleteVideo(video.Id)
 	if err != nil {
 		t.Errorf("Delete video error: %s", err)
 	}

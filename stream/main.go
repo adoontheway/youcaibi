@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"youcaibi/common/util"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -22,7 +23,7 @@ func NewMiddlewareHandler(r *httprouter.Router, cc int) http.Handler {
 
 func (m middlewareHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if !m.l.GetConn() {
-		sendErrorResponse(w, http.StatusTooManyRequests, "too many request")
+		util.SendErrorMsgResponse(w, http.StatusTooManyRequests, "too many request")
 		return
 	}
 	m.r.ServeHTTP(w, r)

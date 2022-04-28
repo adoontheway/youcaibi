@@ -4,6 +4,8 @@ import (
 	// "database/sql"
 
 	// _ "github.com/go-sql-driver/mysql"
+	"youcaibi/common/db"
+
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -22,7 +24,7 @@ func init() {
 	// 	panic(err.Error())
 	// }
 
-	db, _ := connect("mongodb://test:123456@localhost:7017", "video_server")
+	db, _ := db.Connect("mongodb://test:123456@localhost:7017", "video_server")
 	user_coll = db.Collection("user_coll")
 	video_coll = db.Collection("video_coll")
 	comment_coll = db.Collection("comment_coll")
