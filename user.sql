@@ -20,6 +20,11 @@ CREATE TABLE IF NOT EXISTS 't_video_info' (
     `create_time` DATETIME
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS 't_video_del_rec';
+CREATE TABLE IF NOT EXISTS 't_sessions' (
+    `video_id` VARCHAR(64) PRIMARY KEY NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS 't_comments';
 CREATE TABLE IF NOT EXISTS 't_comments' (
     `id` VARCHAR(64) PRIMARY KEY NOT NULL,
@@ -36,3 +41,4 @@ CREATE TABLE IF NOT EXISTS 't_sessions' (
     `login_name` VARCHAR(64)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ALTER TABLE `t_sessions` ADD PRIMARY KEY(`session_id`)
+

@@ -1,6 +1,8 @@
 #! /bin/bash
 
-# Deploy\
+# Deploy
+# TODO pull from git/svn
+
 # copy web statics resources
 cp -R ./templates ./bin/ 
 # video temp dir

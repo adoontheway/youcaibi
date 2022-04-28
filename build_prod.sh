@@ -14,3 +14,5 @@ env GOOS=linux GOARCH=amd64 go build -o ../bin/stream
 
 cd ~/work/src/myworkpath/web
 env GOOS=linux GOARCH=amd64 go build -o ../bin/web
+
+# todo git push remote 

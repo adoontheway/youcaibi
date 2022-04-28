@@ -45,3 +45,8 @@ curl -uri 'http://localhost:8000/user' -Method post -Body $JSON
  * 通用的，业务相关性不大的组件可以拆出成库
  * jwt用来生成session
  * 视频和评论分页
+ * ORM,mysql需要，mongo不大需要
+ * logging
+ * 请求参数校验，安全的用户信息存储
+ * 细粒度，更健壮的流控
+ * 基于容器的部署上云方案
