@@ -2,7 +2,6 @@ package conf
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 )
 
@@ -14,8 +13,8 @@ type Configuration struct {
 var configuration *Configuration
 
 func init() {
-	fmt.Println(os.Getwd())
-	file, _ := os.Open("../conf/conf.json")
+	pwd, _ := os.Getwd()
+	file, _ := os.Open(pwd + "./conf/conf.json")
 	defer file.Close()
 
 	decoder := json.NewDecoder(file)
