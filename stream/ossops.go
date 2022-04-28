@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"youcaibi/conf"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
@@ -11,9 +12,9 @@ var AK string
 var SK string
 
 func init() {
-	AK = "" //access key
-	EP = "" // endpoint
-	SK = "" //
+	AK = ""                //access key
+	EP = conf.GetOssAddr() // endpoint
+	SK = ""                //
 }
 
 func UploadToOss(filename, path, buckname string) bool {

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"youcaibi/conf"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -58,7 +59,7 @@ func userHomeHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 
 	t, err := template.ParseFiles("../template/userhome.html")
 	if err != nil {
-		log.Fatal("Parseing userhome.html template errro: %v", err)
+		log.Fatalf("Parseing userhome.html template errro: %v", err)
 		return
 	}
 	t.Execute(w, p)
@@ -84,8 +85,15 @@ func apiHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 }
 
 // 代理
-func proxyHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	u, _ := url.Parse("http://127.0.0.1:9000/")
+func proxyUploadHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	u, _ := url.Parse("http://" + conf.GetLbAddr())
+
+	proxy := httputil.NewSingleHostReverseProxy(u)
+	proxy.ServeHTTP(w, r)
+}
+
+func proxyVideoHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	u, _ := url.Parse("http://" + conf.GetLbAddr())
 
 	proxy := httputil.NewSingleHostReverseProxy(u)
 	proxy.ServeHTTP(w, r)

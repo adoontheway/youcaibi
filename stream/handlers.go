@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"youcaibi/conf"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -26,7 +27,7 @@ func streamHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) 
 	// defer video.Close()
 
 	// oss
-	targetUrl := "https://ossurl/videos" + vid
+	targetUrl := conf.GetOssAddr() + vid
 	http.Redirect(w, r, targetUrl, 301)
 }
 

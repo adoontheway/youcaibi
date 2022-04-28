@@ -14,8 +14,8 @@ func RegisterHandlers() *httprouter.Router {
 	r.POST("/userhome", userHomeHandler)
 
 	r.POST("/api", apiHandler) // api透传
-
-	r.POST("/upload/:vid", proxyHandler)
+	r.GET("/videos/:vid", proxyVideoHandler)
+	r.POST("/upload/:vid", proxyUploadHandler)
 	r.ServeFiles("/statics/*filepath", http.Dir("./template"))
 	return r
 }
